@@ -137,7 +137,7 @@ class ChannelFeed extends Resource
         return $this->api->sendPost("feed/{$channel_id}/posts/{$post_id}/comments/{$comment_id}/reactions", $args, null, true);
     }
     
-    public function reactToComment($channel, $post, $comment, $emote)
+    public function dereactToComment($channel, $post, $comment, $emote)
     {
         $channel_id = $this->api->getUserID($channel);
         $post_id = $this->api->getPostID($post);

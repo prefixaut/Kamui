@@ -19,7 +19,7 @@ class Channels extends Resource
         
         $id = $this->getUserID($channel);
         if (!$id)
-            return false
+            return false;
         
         return $this->api->sendGet("channels/{$id}");
     }
