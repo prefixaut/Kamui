@@ -2,7 +2,7 @@
 
 namespace Kamui;
 
-use \Kamui\API;
+use Kamui\API;
 
 class Resource
 {

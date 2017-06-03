@@ -2,13 +2,13 @@
 
 namespace Kamui;
 
-use \Kamui\Helpers\Emotes;
-use \Kamui\Resources\Bits;
-use \Kamui\Resources\ChannelFeed;
-use \Kamui\Resources\Channels;
-use \Kamui\Resources\Streams;
-use \Kamui\Resources\Users;
-use \Kamui\Resources\VHS;
+use Kamui\Helpers\Emotes;
+use Kamui\Resources\Bits;
+use Kamui\Resources\ChannelFeed;
+use Kamui\Resources\Channels;
+use Kamui\Resources\Streams;
+use Kamui\Resources\Users;
+use Kamui\Resources\VHS;
 
 class API
 {

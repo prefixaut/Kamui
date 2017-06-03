@@ -2,8 +2,8 @@
 
 namespace Kamui\Resources;
 
-use \Kamui\API;
-use \Kamui\Resource;
+use Kamui\API;
+use Kamui\Resource;
 
 class Streams extends Resource
 {
