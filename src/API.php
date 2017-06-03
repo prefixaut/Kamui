@@ -6,6 +6,8 @@ use Kamui\Helpers\Emotes;
 use Kamui\Resources\Bits;
 use Kamui\Resources\ChannelFeed;
 use Kamui\Resources\Channels;
+use Kamui\Resources\Chat;
+use Kamui\Resources\Clips;
 use Kamui\Resources\Streams;
 use Kamui\Resources\Users;
 use Kamui\Resources\VHS;
@@ -48,6 +50,8 @@ class API
         $this->resources['bits'] = new Bits($this);
         $this->resources['feed'] = new ChannelFeed($this);
         $this->resources['channels'] = new Channels($this);
+        $this->resources['chat'] = new Chat($this);
+        $this->resources['clips'] = new Clips($this);
         $this->resources['streams'] = new Streams($this);
         $this->resources['users'] = new Users($this);
         $this->resources['vhs'] = new VHS($this);
@@ -133,17 +137,9 @@ class API
     
     public function getUserID($channel)
     {
-        if (is_numeric($channel)) {
-            try {
-                return intval($channel);
-            } catch (Exception $e) {}
-        }
-        
-        if (is_array($channel) && isset($channel['_id']))
-            return $channel['_id'];
-            
-        if (is_object($channel) && isset($channel->_id))
-            return $channel->_id;
+        $id = $this->getGenericID($channel, '_id');
+        if ($id)
+            return $id;
         
         $res = $this->sendGet('users', array(
             'login' => $channel,
@@ -167,20 +163,11 @@ class API
     
     public function getEmoteID($emote)
     {
-        if (is_numeric($channel)) {
-            try {
-                return intval($channel);
-            } catch (Exception $e) {}
-        }
-        
-        if (is_array($object) && isset($object['image_id']))
-            return $object['image_id'];
-        
-        if (is_object($object) && isset($object->image_id))
-            return $object->image_id;
+        $id = $this->getGenericID($emote, 'image_id');
+        if ($id)
+            return $id;
         
         $item = Emotes::get($emote);
-        var_dump($item);
         return (!$item) ? false : $item['image_id'];
     }
     
@@ -202,7 +189,7 @@ class API
      * ~~ Private Helper Functions
      * =======================================================================*/
     
-    private function getGenericID($object)
+    private function getGenericID($object, $field = 'id')
     {
         if (is_numeric($channel)) {
             try {
@@ -210,11 +197,11 @@ class API
             } catch (Exception $e) {}
         }
         
-        if (is_array($object) && isset($object['id']))
-            return $object['id'];
+        if (is_array($object) && isset($object[$field]))
+            return $object[$field];
         
-        if (is_object($object) && isset($object->id))
-            return $object->id;
+        if (is_object($object) && isset($object->${$field}))
+            return $object->${$field};
         
         return false;
     }
