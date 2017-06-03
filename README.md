@@ -1,3 +1,4 @@
+[![Packagist](https://img.shields.io/packagist/v/prefixaut/kamui.svg?style=flat-square)](https://github.com/prefixaut/Kamui) [![GitHub release](https://img.shields.io/github/release/prefixaut/kamui.svg?style=flat-square)](https://github.com/prefixaut/Kamui) [![Travis](https://img.shields.io/travis/prefixaut/kamui.svg?style=flat-square)](https://github.com/prefixaut/Kamui) [![license](https://img.shields.io/github/license/prefixaut/kamui.svg?style=flat-square)](https://github.com/prefixaut/Kamui)
 # Kamui
 > A PHP-Wrapper for the Twitch API (Kraken)
 
