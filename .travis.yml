@@ -8,5 +8,8 @@ php:
   - hhvm
   - nightly
 
+notifications:
+  email: false
+
 install: composer install
-script: ./vendor/bin/phpunit
+script: ./vendor/bin/phpunit -c .
