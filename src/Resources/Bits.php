@@ -44,7 +44,7 @@ class Bits extends Resource
      * available throughout Twitch, in all bits-enabled channels.
      * 
      * @param string|integer|object|array|null $channel The Channel-ID or Channel-Object from where it should retrieve it (optional)
-     * @return false|stdClass Object returned from the Twitch-API or false on failure
+     * @return false|object Object returned from the Twitch-API or false on failure
      *
      * @see https://dev.twitch.tv/docs/v5/reference/bits/#get-cheermotes
      */
