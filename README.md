@@ -28,7 +28,7 @@ Every function simply returns the original content of the Resource as Objects.
 If any error occurs, it'll simply return false to prevent accidental breaks.
 You can also use all Objects however you like them within the API like so:
 
-````php
+```php
 $cool_dude = $api->users->get('prefixaut');
 $api->users->follows($cool_dude);
 $api->users->follows($cool_dude->_id);
