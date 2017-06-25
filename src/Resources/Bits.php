@@ -26,6 +26,11 @@ namespace Kamui\Resources;
 use Kamui\API;
 use Kamui\Resource;
 
+/**
+ * Resource for the Bits Endpoint.
+ *
+ * @see https://dev.twitch.tv/docs/v5/reference/bits/
+ */
 class Bits extends Resource
 {
     public function __construct(API $api)
@@ -33,6 +38,16 @@ class Bits extends Resource
         parent::__construct($api);
     }
     
+    /**
+     * Retrieves the list of available cheermotes, animated emotes to which
+     * viewers can assign bits, to cheer in chat. The cheermotes returned are
+     * available throughout Twitch, in all bits-enabled channels.
+     * 
+     * @param string|integer|object|array|null $channel The Channel-ID or Channel-Object from where it should retrieve it (optional)
+     * @return false|stdClass Object returned from the Twitch-API or false on failure
+     *
+     * @see https://dev.twitch.tv/docs/v5/reference/bits/#get-cheermotes
+     */
     public function get($channel = null)
     {
         $args = array();
