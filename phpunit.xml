@@ -9,7 +9,6 @@
         </testsuite>
         <testsuite name="resources">
             <directory suffix="Test.php">tests/Resources</directory>
-            <file>tests/Resources/ChannelsTest.php</file>
         </testsuite>
     </testsuites>
 </phpunit>

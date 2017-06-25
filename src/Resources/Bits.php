@@ -19,6 +19,7 @@ class Bits extends Resource
             $id = $this->api->getUserID($channel);
             if (!$id)
                 return false;
+            
             $args['channel_id'] = $id;
         }
         
