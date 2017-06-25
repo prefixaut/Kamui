@@ -1,7 +1,7 @@
 {
   "name": "prefixaut/kamui",
   "description": "A Wrapper for the Twitch-API in PHP",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "library",
   "keywords": [
     "twitch",
