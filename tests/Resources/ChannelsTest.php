@@ -16,8 +16,8 @@ class ChannelsTest extends ResourceCase
         $this->assertNotFalse($this->api->channels->get('25391134'));
     }
     
-    function testEditors()
-    {
-        //$this->assertNotFalse($this->api->channels->editors('prefixaut'));
-    }
+    // function testEditors()
+    // {
+    //     $this->assertNotFalse($this->api->channels->editors('prefixaut'));
+    // }
 }
