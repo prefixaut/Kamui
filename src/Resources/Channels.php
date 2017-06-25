@@ -17,7 +17,7 @@ class Channels extends Resource
         if (is_null($channel))
             return $this->api->sendGet('channel', array(), true);
         
-        $id = $this->getUserID($channel);
+        $id = $this->api->getUserID($channel);
         if (!$id)
             return false;
         
