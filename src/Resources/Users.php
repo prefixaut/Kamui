@@ -18,9 +18,14 @@ class Users extends Resource
             return $this->api->sendGet('user', array(), $true);
         }
         
-        $id = $this->api->getUserID($user);
-        if (!$id)
-            return false;
+        $id = $this->api->getUserID($user, false);
+        if (!$id) {
+            $args = array(
+                'login' => $user,
+            );
+            
+            return $this->api->sendGet('users', $args);
+        }
         
         return $this->api->sendGet("users/{$id}");
     }
