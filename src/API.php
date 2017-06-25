@@ -8,6 +8,7 @@ use Kamui\Resources\ChannelFeed;
 use Kamui\Resources\Channels;
 use Kamui\Resources\Chat;
 use Kamui\Resources\Clips;
+use Kamui\Resources\Collections;
 use Kamui\Resources\Streams;
 use Kamui\Resources\Users;
 use Kamui\Resources\VHS;
@@ -19,6 +20,7 @@ class API
     private $resources = array();
     private $base_url = "https://api.twitch.tv/kraken/";
     private $community_id_pattern = '^[a-f0-9]{8}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{12}$';
+    private $collection_id_pattern = '/^[a-zA-Z0-9]{14}$/';
     
     /* =========================================================================
      * ~~ Constructor
@@ -52,6 +54,7 @@ class API
         $this->resources['channels'] = new Channels($this);
         $this->resources['chat'] = new Chat($this);
         $this->resources['clips'] = new Clips($this);
+        $this->resources['collections'] = new Collections($this);
         $this->resources['streams'] = new Streams($this);
         $this->resources['users'] = new Users($this);
         $this->resources['vhs'] = new VHS($this);
@@ -183,25 +186,60 @@ class API
             return $community;
         
         return false;
+    
+    public function getCollectionID($collection)
+    {
+        return $this->getPatternID($collection, $this->collection_id_pattern);
+    }
+    
+    public function getCollectionItemID($item)
+    {
+        return $this->getPatternID($item, $this->collection_item_id_pattern);
+    }
+    
+    public function getCollectionItemType($item, $field = 'item_type', $default = 'video')
+    {
+        if (is_array($item) && isset($item[$field]))
+            return $item[$field];
+        
+        if (is_object($item) && isset($item->{$field}))
+            return $item->{$field};
+        
+        return 'video';
     }
     
     /* =========================================================================
      * ~~ Private Helper Functions
      * =======================================================================*/
     
-    private function getGenericID($object, $field = 'id')
+    private function getGenericID($object, $field = 'id', $number = true)
     {
-        if (is_numeric($channel)) {
+        if ($object === false)
+            return false;
+        
+        if ($number && is_numeric($object)) {
             try {
-                return intval($channel);
+                return intval($object);
             } catch (Exception $e) {}
         }
         
         if (is_array($object) && isset($object[$field]))
             return $object[$field];
         
-        if (is_object($object) && isset($object->${$field}))
-            return $object->${$field};
+        if (is_object($object) && isset($object->{$field}))
+            return $object->{$field};
+        
+        return false;
+    }
+    
+    private function getPatternID($object, $pattern, $field = '_id')
+    {
+        $id = $this->getGenericID($object, $field, false);
+        if ($id)
+            return $id;
+        
+        if (is_string($object) && preg_match($pattern, $object))
+            return $object;
         
         return false;
     }

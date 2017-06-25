@@ -88,6 +88,15 @@ class Channels extends Resource
         return $this->api->sendGet("channels/{$id}/videos");
     }
     
+    public function collections($channel, $args = array())
+    {
+        $id = $this->api->getUserID($channel);
+        if (!$id)
+            return false;
+        
+        return $this->api->sendGet("channels/{$id}/collections", $args);
+    }
+    
     public function startCommercial($channel, $duration)
     {
         $id = $this->api->getUserID($channel);
