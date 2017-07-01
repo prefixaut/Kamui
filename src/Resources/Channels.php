@@ -45,13 +45,17 @@ class Channels extends Resource
         return $this->api->sendGet("channels/{$id}");
     }
     
-    public function update($channel, $args)
+    public function update($channel, $content)
     {
         $id = $this->api->getUserID($channel);
         if (!$id)
             return false;
+            
+        $data = array(
+            'channel'   => $content,
+        );
         
-        return $this->api->sendPutJson("channels/{$id}", $args, array(), true);
+        return $this->api->sendPutJson("channels/{$id}", $data, array(), true);
     }
     
     public function editors($channel)
