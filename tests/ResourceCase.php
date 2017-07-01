@@ -34,6 +34,7 @@ class ResourceCase extends TestCase
     public function setUp()
     {
         $root = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR;
+        
         $client_id = $this->getVaribale('TWITCH_CLIENT_ID', 'client_id.txt');
         $secret = $this->getVaribale('TWITCH_CLIENT_SECRET', 'secret.txt');
         $oauth = $this->getVaribale('TWITCH_OAUTH_TOKEN', 'oauth.txt');
@@ -47,7 +48,7 @@ class ResourceCase extends TestCase
             return $_ENV[$env];
         
         if (is_readable($this->root . $file))
-            return @file_get_contents($this->root . $file);
+            return trim(@file_get_contents($this->root . $file));
         
         return null;
     }
