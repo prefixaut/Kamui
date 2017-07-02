@@ -49,7 +49,7 @@ class Uploader
     public function uploadVideo($channel, $title, $file, $args = array())
     {
         if (PHP_MAJOR_VERSION < 5 || (PHP_MAJOR_VERSION == 5 && PHP_MINOR_VERSION < 5)) {
-            throw Exception("You cannot use this Feature on you PHP Version (" . phpversion() . "), required Version >=5.5|^7.0");
+            throw new \Exception("You cannot use this Feature on you PHP Version (" . phpversion() . "), required Version >=5.5|^7.0");
         }
         
         if (!is_readable($file))
