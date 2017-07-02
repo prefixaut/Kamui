@@ -27,8 +27,6 @@ use Kamui\Resource;
 use Kamui\Exceptions\AuthentificationException;
 use Kamui\Exceptions\InvalidRequestException;
 use Kamui\Exceptions\PermissionException;
-use Kamui\Util\APICache;
-use Kamui\Util\MemoryCache;
 use Kamui\Helpers\Emotes;
 use Kamui\Resources\Bits;
 use Kamui\Resources\ChannelFeed;
@@ -45,6 +43,9 @@ use Kamui\Resources\Teams;
 use Kamui\Resources\Users;
 use Kamui\Resources\Videos;
 use Kamui\Resources\VHS;
+use Stash\Pool;
+use Stash\Interfaces\DriverInterface;
+use Stash\Driver\FileSystem;
 
 class API
 {
@@ -77,13 +78,13 @@ class API
      * ~~ Constructor
      * =======================================================================*/
     
-    public function __construct($client_id, $client_secret = null, $oauth_token = null, APICache $cache = null, $silent = true)
+    public function __construct($client_id, $client_secret = null, $oauth_token = null, $silent = true, $cache = null)
     {
         $this->setClientID($client_id);
         $this->setClientSecret($client_secret);
         $this->setOAuthToken($oauth_token);
-        $this->setCache($cache);
         $this->setSilent($silent);
+        $this->setCache($cache);
         $this->setupResources();
     }
     
@@ -157,7 +158,8 @@ class API
     
     public function setCache($cache)
     {
-        $this->cache = (is_null($cache) || !($cache instanceof APICache)) ? new MemoryCache() : $cache;
+        $driver = (is_null($cache) || !($cache instanceof DriverInterface)) ? new FileSystem() : $cache;
+        $this->cache = new Pool($driver);
     }
     
     public function isSilent()
@@ -273,6 +275,28 @@ class API
      * ~~ Public Helper Functions
      * =======================================================================*/
     
+    public function saveCache($key, $value, $duration = 300)
+    {
+        $item = $this->cache->get($key);
+        $item->lock();
+        $item->expiresAfter($duration);
+        $item->set($value);
+        $this->cache->save($item);
+    }
+    
+    public function retainCache($key)
+    {
+        $item = $this->cache->get($key);
+        return $item->get();
+    }
+    
+    public function hasCache($key)
+    {
+        $item = $this->cache->get($key);
+        $data = $item->get();
+        return $item->isMiss();
+    }
+    
     public function getAuthentificationUrl($redirect, $type, $scopes, $args = array())
     {
         $scopes = is_array($scopes) ? implode($scopes) : $scopes;
@@ -291,17 +315,17 @@ class API
         $id = $this->getGenericID($user, '_id');
         if ($id) {
             if (is_object($user)) {
-                $this->cache->set('user_' . strtolower($user->name), $id);
+                $this->saveCache('user_' . strtolower($user->name), $id);
             } elseif (is_array($user)) {
-                $this->cache->set('user_' . strtolower($user['name']), $id);
+                $this->saveCache('user_' . strtolower($user['name']), $id);
             }
             
             return $id;
         }
         
-        $id = $this->cache->get('user_' . strtolower($user));
-        if ($id)
-            return $id;
+        $key = 'user_' . strtolower($user);
+        if ($this->hasCache($key))
+            return $this->retainCache($key);
         
         if (!$fetch)
             return false;
@@ -314,7 +338,7 @@ class API
             return false;
         
         $id = $res->users[0]->_id;
-        $this->cache->set('user_' . strtolower($user), $id);
+        $this->saveCache($key, $id);
         return $id;
     }
     
@@ -343,16 +367,16 @@ class API
         $id = $this->getPatternID($community, $this->community_id_pattern);
         if ($id) {
             if (is_object($community)) {
-                $this->cache->set('community_' . strtolower($community->name, $id));
+                $this->saveCache('community_' . strtolower($community->name), $id);
             } elseif (is_array($community)) {
-                $this->cache->set('community_' . strtolower($community['name'], $id));
+                $this->saveCache('community_' . strtolower($community['name']) , $id);
             }
             return $id;
         }
         
-        $id = $this->cache->get('community_' . strtolower($community));
-        if ($id)
-            return $id;
+        $key = 'community_' . strtolower($community);
+        if ($this->hasCache($key))
+            return $this->retainCache($key);
         
         if (!$fetch)
             return false;
@@ -364,7 +388,7 @@ class API
         if (!$res)
             return false;
         
-        $this->cache->set('community_' . strtolower($community), $res->_id);
+        $this->saveCache($key, $res->_id);
         return $res->_id;
     }
     
@@ -546,7 +570,7 @@ class API
             
             switch ($json->status) {
                 case 400:
-                    throw new InvalidRequestException();
+                    throw new InvalidRequestException($json->error);
                     break;
                 case 401:
                     throw new PermissionException($this->scope);
