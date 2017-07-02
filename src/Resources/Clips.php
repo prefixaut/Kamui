@@ -45,6 +45,7 @@ class Clips extends Resource
     
     public function followed($args = array())
     {
+        $this->api->scope = 'user_read';
         return $this->api->sendGet('clips/followed', $args, true);
     }
 }

@@ -67,6 +67,7 @@ class Users extends Resource
         if (!$user_id || !$channel_id)
             return false;
         
+        $this->api->scope = 'user_subscriptions';
         return $this->api->sendGet("users/{$id}/subscriptions/{$channel_id}", array(), true);
     }
     
@@ -94,6 +95,7 @@ class Users extends Resource
         if (!$user_id || $channel_id)
             return false;
         
+        $this->api->scope = 'user_follows_edit';
         return $this->api->sendPut("users/{$user_id}/follows/channels/{$channel_id}", array(), null, true);
     }
     
@@ -104,6 +106,7 @@ class Users extends Resource
         if (!$user_id || !$channel_id)
             return false;
         
+        $this->api->scope = 'user_follows_edit';
         return $this->api->sendDelete("users/{$user_id}/follows/channels/{$channel_id}", array(), null, true);
     }
     
@@ -118,6 +121,7 @@ class Users extends Resource
             'offset'    => $offset,
         );
         
+        $this->api->scope = 'user_blocks_read';
         return $this->api->sendGet("users/{$id}/blocks", $args, true);
     }
     
@@ -128,6 +132,7 @@ class Users extends Resource
         if (!$source_id || !$target_id)
             return false;
         
+        $this->api->scope = 'user_blocks_edit';
         return $this->api->sendPut("users/{$source_id}/blocks/{$target_id}", array(), null, true);
     }
     
@@ -138,6 +143,7 @@ class Users extends Resource
         if (!$source_id || !$target_id)
             return false;
         
+        $this->api->scope = 'user_blocks_edit';
         return $this->api->sendDelete("users/{$source_id}/blocks/{$target_id}", array(), true);
     }
 }

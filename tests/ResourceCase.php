@@ -29,6 +29,8 @@ use Kamui\API;
 class ResourceCase extends TestCase
 {
     protected $api;
+    protected $name = 'prefixaut';
+    protected $id = 25391134;
     private $root;
     
     public function setUp()

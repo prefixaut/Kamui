@@ -38,6 +38,8 @@ class VHS extends Resource
         $content = json_encode(array(
             'identifier'    => $identifier,
         ));
+        
+        $this->api->scope = 'viewing_activity_read';
         return $this->api->sendPut("user/vhs", array(), $content, true, array(
             'Content-Type'  => 'application/json',
         ));
@@ -45,11 +47,13 @@ class VHS extends Resource
     
     public function get()
     {
+        $this->api->scope = 'user_read';
         return $this->api->sendGet("user/vhs", array(), true);
     }
     
     public function delete()
     {
+        $this->api->scope = 'viewing_activity_read';
         return $this->api->sendDelete("user/vhs", array(), true);
     }
 }

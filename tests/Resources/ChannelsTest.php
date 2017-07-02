@@ -27,18 +27,69 @@ use Kamui\Test\ResourceCase;
 
 class ChannelsTest extends ResourceCase
 {
+    function testGetMe()
+    {
+        $data = $this->api->channels->get();
+        
+        $this->assertNotFalse($data);
+        $this->assertEquals($this->id, $data->_id);
+        $this->assertEquals(strtolower($this->name), strtolower($data->name));
+    }
+    
     function testGetByName()
     {
-        $this->assertNotFalse($this->api->channels->get('prefixaut'));
+        $data = $this->api->channels->get($this->name);
+        
+        $this->assertNotFalse($data);
+        $this->assertEquals($this->id, $data->_id);
+        $this->assertEquals(strtolower($this->name), strtolower($data->name));
     }
     
     function testGetByID()
     {
-        $this->assertNotFalse($this->api->channels->get('25391134'));
+        $data = $this->api->channels->get($this->id);
+        
+        $this->assertNotFalse($data);
+        $this->assertEquals($this->id, $data->_id);
+        $this->assertEquals(strtolower($this->name), strtolower($data->name));
     }
     
-    // function testEditors()
-    // {
-    //     $this->assertNotFalse($this->api->channels->editors('prefixaut'));
-    // }
+    function testUpdate()
+    {
+        $data = $this->api->channels->update('prefixaut', array(
+            'channel_feed_enabled' => false,
+        ));
+        
+        $this->assertNotFalse($data);
+        $this->assertEquals($this->id, $data->_id);
+        $this->assertEquals(strtolower($this->name), strtolower($data->name));
+        
+        // Reset the changes
+        $this->assertNotFalse($this->api->channels->update('prefixaut', array(
+            'channel_feed_enabled' => true,
+        )));
+        
+        // Test that we don't have access to other channels
+        $this->assertFalse($this->api->channels->update('ESL_CSGO', array(
+            'status'    => 'this will fail anyways',
+        )));
+    }
+    
+    function testEditors()
+    {
+        $data = $this->api->channels->editors($this->name);
+        $this->assertNotFalse($data);
+        $this->assertTrue(isset($data->users));
+        $this->assertInternalType('array', $data->users);
+    }
+    
+    function testFollowers()
+    {
+        $this->assertNotFalse($this->api->channels->followers('prefixaut'));
+    }
+    
+    function testTeams()
+    {
+        $this->assertNotFalse($this->api->channels->teams('prefixaut'));
+    }
 }

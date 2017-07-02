@@ -78,6 +78,7 @@ class Streams extends Resource
             'offset'    => $offset,
         );
         
+        $this->api->scope = 'user_read';
         return $this->api->sendGet('streams/followed', $args, true);
     }
 }

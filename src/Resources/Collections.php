@@ -61,6 +61,7 @@ class Collections extends Resource
         if (!$id || !is_string($title))
             return false;
         
+        $this->api->scope = 'collections_edit';
         return $this->api->sendPostJson("channels/{$id}/collections", $args, array(), true);
     }
     
@@ -70,6 +71,7 @@ class Collections extends Resource
         if (!$id || !is_string($title))
             return false;
         
+        $this->api->scope = 'collections_edit';
         return $this->api->sendPutJson("collections/{$id}", $args, array(), true);
     }
     
@@ -84,6 +86,7 @@ class Collections extends Resource
             'item_id'   => $item_id,
         );
         
+        $this->api->scope = 'collections_edit';
         return $this->sendPutJson("collections/{$collection_id}/thumbnail", $data, array(), true);
     }
     
@@ -101,6 +104,7 @@ class Collections extends Resource
         if (!$item_id)
             return false;
         
+        $this->api->scope = 'collections_edit';
         return $this->sendDelete("collections/{$collection_id}/items/{$video_id}", array(), true);
     }
     
@@ -120,6 +124,7 @@ class Collections extends Resource
             'type'  => $type,
         );
         
+        $this->api->scope = 'collections_edit';
         return $this->sendPostJson("collections/{$collection_id}/items", $data, array(), true);
     }
     
@@ -134,6 +139,7 @@ class Collections extends Resource
             'position'  => intval($position),
         );
         
+        $this->api->scope = 'collections_edit';
         $this->sendPutJson("collections/{$collection_id}/items/{$item_id}", $data, array(), true);
     }
 }

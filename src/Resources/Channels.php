@@ -35,8 +35,10 @@ class Channels extends Resource
     
     public function get($channel = null)
     {
-        if (is_null($channel))
+        if (is_null($channel)) {
+            $this->api->scope = 'channel_read';
             return $this->api->sendGet('channel', array(), true);
+        }
         
         $id = $this->api->getUserID($channel);
         if (!$id)
@@ -55,6 +57,7 @@ class Channels extends Resource
             'channel'   => $content,
         );
         
+        $this->api->scope = 'channel_editor';
         return $this->api->sendPutJson("channels/{$id}", $data, array(), true);
     }
     
@@ -64,6 +67,7 @@ class Channels extends Resource
         if (!$id)
             return false;
         
+        $this->api->scope = 'channel_read';
         return $this->api->sendGet("channels/{$id}/editors", array(), true);
     }
     
@@ -91,6 +95,7 @@ class Channels extends Resource
         if (!$id)
             return false;
         
+        $this->api->scope = 'channel_subscriptions';
         return $this->api->sendGet("channels/{$id}/subscriptions", $args, true);
     }
     
@@ -101,6 +106,7 @@ class Channels extends Resource
         if (!$channel_id || !$user_id)
             return false;
         
+        $this->api->scope = 'channel_check_subscription';
         return $this->api->sendGet("channels/{$channel_id}/subscriptions/{$user_id}", array(), true);
     }
     
@@ -132,6 +138,7 @@ class Channels extends Resource
             'duration'  => $duration,
         );
         
+        $this->api->scope = 'channel_commercial';
         return $this->api->sendPostJson("channels/{$id}/commercial", $content, array(), true);
     }
     
@@ -141,6 +148,7 @@ class Channels extends Resource
         if (!$id)
             return false;
         
+        $this->api->scope = 'channel_stream';
         return $this->api->sendDelete("channels/{$id}/stream_key", array(), true);
     }
     
@@ -150,6 +158,7 @@ class Channels extends Resource
         if (!$id)
             return false;
         
+        $this->api->scope = 'channel_editor';
         return $this->api->sendGet("channels/{$id}/community");
     }
     
@@ -160,6 +169,7 @@ class Channels extends Resource
         if (!$channel_id || !$community_id)
             return false;
         
+        $this->api->scope = 'channel_editor';
         return $this->api->sendPut("channels/{$channel_id}/community/{$community_id}", array(), null, true);
     }
     
@@ -169,6 +179,7 @@ class Channels extends Resource
         if (!$id)
             return false;
         
+        $this->api->scope = 'channel_editor';
         return $this->api->sendDelete("channels/{$id}/community", array(), true);
     }
 }

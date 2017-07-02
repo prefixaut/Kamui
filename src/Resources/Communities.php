@@ -54,6 +54,7 @@ class Communities extends Resource
         if (!$id)
             return false;
         
+        $this->api->scope = 'communities_edit';
         return $this->sendPutJson("communities/{$id}", $args, array(), true);
     }
     
@@ -85,6 +86,7 @@ class Communities extends Resource
         if (!is_null($cursor))
             $args['cursor'] = $cursor;
         
+        $this->api->scope = 'communities_moderate';
         return $this->api->sendGet("communities/{$id}/bans", $args, true);
     }
     
@@ -95,6 +97,7 @@ class Communities extends Resource
         if (!$community_id || !$user_id)
             return false;
         
+        $this->api->scope = 'communities_moderate';
         return $this->api->sendPut("communities/{$community_id}/bans/{$user_id}", array(), null, true);
     }
     
@@ -105,6 +108,7 @@ class Communities extends Resource
         if (!$community_id || !$user_id)
             return false;
         
+        $this->api->scope = 'communities_moderate';
         return $this->api->sendDelete("communities/{$community_id}/bans/{$user_id}", array(), true);
     }
     
@@ -115,6 +119,7 @@ class Communities extends Resource
             return false;
         
         if (is_null($image)) {
+            $this->api->scope = 'communities_edit';
             return $this->api->sendDelete("communities/{$community_id}/images/avatar", array(), true);
         }
         
@@ -128,6 +133,7 @@ class Communities extends Resource
             'avatar_image'  => $image,
         );
         
+        $this->api->scope = 'communities_edit';
         return $this->sendPostJson("communities/{$community_id}/images/avatar", $data, array(), true);
     }
     
@@ -138,6 +144,7 @@ class Communities extends Resource
             return false;
         
         if (is_null($image)) {
+            $this->api->scope = 'communities_edit';
             return $this->api->sendDelete("communities/{$community_id}/images/cover", array(), true);
         }
         
@@ -151,6 +158,7 @@ class Communities extends Resource
             'cover_image'  => $image,
         );
         
+        $this->api->scope = 'communities_edit';
         return $this->sendPostJson("communities/{$community_id}/images/cover", $data, array(), true);
     }
     
@@ -160,6 +168,7 @@ class Communities extends Resource
         if (!$id)
             return false;
         
+        $this->api->scope = 'communities_edit';
         return $this->api->sendGet("communities/{$id}/moderators", array(), true);
     }
     
@@ -170,6 +179,7 @@ class Communities extends Resource
         if (!$community_id || !$user_id)
             return false;
         
+        $this->api->scope = 'communities_edit';
         return $this->api->sendPut("communities/{$community_id}/moderators/{$user_id}", array(), null, true);
     }
     
@@ -180,6 +190,7 @@ class Communities extends Resource
         if (!$community_id || !$user_id)
             return false;
         
+        $this->api->scope = 'communities_edit';
         return $this->api->sendDelete("communities/{$community_id}>/moderators/{$user_id}", array(), true);
     }
     
@@ -219,6 +230,7 @@ class Communities extends Resource
         if (!is_null($cursor))
             $args['cursor'] = $cursor;
         
+        $this->api->scope = 'communities_moderate';
         return $this->api->sendGet("communities/{$id}/timeouts", $args, true);
     }
     
@@ -236,6 +248,7 @@ class Communities extends Resource
         if (!is_null($reason))
             $data['reason'] = $reason;
         
+        $this->api->scope = 'communities_moderate';
         return $this->api->sendPutJson("communities/{$community_id}/timeouts/{$user_id}", $data, array(), true);
     }
     
@@ -246,6 +259,7 @@ class Communities extends Resource
         if (!$community_id || !$user_id)
             return false;
         
+        $this->api->scope = 'communities_moderate';
         return $this->api->sendDelete("communities/{$community_id}/timeouts/{$user_id}", array(), true);
     }
 }

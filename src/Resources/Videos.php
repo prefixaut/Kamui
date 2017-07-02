@@ -50,6 +50,7 @@ class Videos extends Resource
     
     public function followed($args = array())
     {
+        $this->api->scope = 'user_read';
         return $this->api->sendGet('videos/followed', $args, true);
     }
     
@@ -64,6 +65,7 @@ class Videos extends Resource
             'title'         => $title,
         ));
         
+        $this->api->scope = 'channel_editor';
         return $this->api->sendPost('videos', $args, null, true);
     }
     
@@ -79,6 +81,7 @@ class Videos extends Resource
         if (!$id)
             return false;
         
+        $this->api->scope = 'channel_editor';
         return $this->api->sendPut("videos/{$id}", $args, null, true);
     }
     
@@ -88,6 +91,7 @@ class Videos extends Resource
         if (!$id)
             return false;
         
+        $this->api->scope = 'channel_editor';
         return $this->api->sendDelete("videos/{$id}", array(), true);
     }
 }

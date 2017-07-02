@@ -33,20 +33,23 @@ class ChannelFeed extends Resource
         $this->api = $api;
     }
     
-    public function getPost($channel, $post = null, $args = array())
+    public function getPost($channel, $post = null, $args = array(), $auth = false)
     {
         $channel_id = $this->api->getUserID($channel);
         if (!$channel_id)
             return false;
         
         if (is_null($post))
-            return $this->api->sendGet("feed/{$channel_id}/posts", $args, true);
+            return $this->api->sendGet("feed/{$channel_id}/posts", $args, $auth);
         
         $post_id =  $this->api->getPostID($post);
         if (!$post_id)
             return false;
         
-        return $this->api->sendGet("feed/{$channel_id}/posts/{$post_id}", $args, true);
+        if ($auth)
+            $this->api->scope = 'user_ids';
+        
+        return $this->api->sendGet("feed/{$channel_id}/posts/{$post_id}", $args, $auth);
     }
     
     public function createPost($channel, $content, $share = false)
@@ -63,6 +66,7 @@ class ChannelFeed extends Resource
             'content'   => $content,
         );
         
+        $this->api->scope = 'channel_feed_edit';
         $this->sendPostJson("feed/{$id}/posts", $content, $args, true);
     }
     
@@ -73,6 +77,7 @@ class ChannelFeed extends Resource
         if (!$channel_id || !$post_id)
             return false;
         
+        $this->api->scope = 'channel_feed_edit';
         return $this->sendDelete("feed/{$channel_id}/posts/{$post_id}", array(), true);
     }
     
@@ -88,6 +93,7 @@ class ChannelFeed extends Resource
             'emote_id'  => $emote_id,
         );
         
+        $this->api->scope = 'channel_feed_edit';
         return $this->api->sendPost("feed/{$channel_id}/posts/{$post_id}/reactions", $args, null, true);
     }
     
@@ -103,6 +109,7 @@ class ChannelFeed extends Resource
             'emote_id'  => $emote_id,
         );
         
+        $this->api->scope = 'channel_feed_edit';
         return $this->api->sendDelete("feed/{$channel_id}/posts/{$post_id}/reactions", $args, true);
     
     }
@@ -128,6 +135,7 @@ class ChannelFeed extends Resource
             'content'   => $content,
         );
         
+        $this->api->scope = 'channel_feed_edit';
         return $this->api->sendPostJson("feed/{$channel_id}/posts/{$post_id}/comments", $content, array(), true);
     }
     
@@ -139,6 +147,7 @@ class ChannelFeed extends Resource
         if (!$channel_id || !$post_id || !$comment_id)
             return false;
         
+        $this->api->scope = 'channel_feed_edit';
         return $this->api->sendDelete("feed/{$channel_id}/posts/{$post_id}/comments/{$comment_id}", array(), true);
     }
     
@@ -155,6 +164,7 @@ class ChannelFeed extends Resource
             'emote_id'  => $emote_id,
         );
         
+        $this->api->scope = 'channel_feed_edit';
         return $this->api->sendPost("feed/{$channel_id}/posts/{$post_id}/comments/{$comment_id}/reactions", $args, null, true);
     }
     
@@ -171,6 +181,7 @@ class ChannelFeed extends Resource
             'emote_id'  => $emote_id,
         );
         
+        $this->api->scope = 'channel_feed_edit';
         return $this->api->sendDelete("feed/{$channel_id}/posts/{$post_id}/comments/{$comment_id}/reactions", $args, true);
     }
 }
