@@ -176,21 +176,23 @@ class API
     
     private function setupResources()
     {
-        $this->resources['bits'] = new Bits($this);
-        $this->resources['feed'] = new ChannelFeed($this);
-        $this->resources['channels'] = new Channels($this);
-        $this->resources['chat'] = new Chat($this);
-        $this->resources['clips'] = new Clips($this);
-        $this->resources['collections'] = new Collections($this);
-        $this->resources['communites'] = new Communities($this);
-        $this->resources['games'] = new Games($this);
-        $this->resources['ingests'] = new Ingests($this);
-        $this->resources['search'] = new Search($this);
-        $this->resources['streams'] = new Streams($this);
-        $this->resources['teams'] = new Teams($this);
-        $this->resources['users'] = new Users($this);
-        $this->resources['videos'] = new Videos($this);
-        $this->resources['vhs'] = new VHS($this);
+        $this->resources = array(
+            'bits'          => new Bits($this),
+            'feed'          => new ChannelFeed($this),
+            'channels'      => new Channels($this),
+            'chat'          => new Chat($this),
+            'clips'         => new Clips($this),
+            'collections'   => new Collections($this),
+            'communites'    => new Communities($this),
+            'games'         => new Games($this),
+            'ingests'       => new Ingests($this),
+            'search'        => new Search($this),
+            'streams'       => new Streams($this),
+            'teams'         => new Teams($this),
+            'users'         => new Users($this);
+            'vhs'           => new VHS($this);
+            'videos'        => new Videos($this),
+        );
     }
     
     /* =========================================================================
