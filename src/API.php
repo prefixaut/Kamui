@@ -127,7 +127,7 @@ class API
     
     public function setClientID($id)
     {
-        $this->client_id = $id;
+        $this->client_id = (is_null($id) || is_string($id)) ? $id : null;
     }
     
     public function getClientSecret()
@@ -137,7 +137,7 @@ class API
     
     public function setClientSecret($secret)
     {
-        $this->client_secret = $secret;
+        $this->client_secret = (is_null($secret) || is_string($secret)) ? $secret : null;
     }
     
     public function getOAuthToken()
@@ -147,7 +147,7 @@ class API
     
     public function setOAuthToken($token)
     {
-        $this->oauth_token = $token;
+        $this->oauth_token = (is_null($token) || is_string($token)) ? $token : null;
     }
     
     public function getCache()
@@ -155,9 +155,9 @@ class API
         return $this->cache;
     }
     
-    public function setCache(APICache $cache)
+    public function setCache($cache)
     {
-        $this->cache = (is_null($cache)) ? new MemoryCache() : $cache;
+        $this->cache = (is_null($cache) || !($cache instanceof APICache)) ? new MemoryCache() : $cache;
     }
     
     public function isSilent()
