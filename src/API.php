@@ -24,6 +24,9 @@
 namespace Kamui;
 
 use Kamui\Resource;
+use Kamui\Exceptions\AuthentificationException;
+use Kamui\Exceptions\InvalidRequestException;
+use Kamui\Exceptions\PermissionException;
 use Kamui\Util\APICache;
 use Kamui\Util\MemoryCache;
 use Kamui\Helpers\Emotes;
@@ -65,19 +68,22 @@ class API
     private $collection_item_id_pattern = '/[a-zA-Z0-9]{44}$/';
     private $video_id_pattern = '/^[v]?[0-9]+/';
     
-    // Cache
+    // Misc
     private $cache;
+    private $silent = true;
+    public $scope = null;
     
     /* =========================================================================
      * ~~ Constructor
      * =======================================================================*/
     
-    public function __construct($client_id, $client_secret = null, $oauth_token = null, APICache $cache = null)
+    public function __construct($client_id, $client_secret = null, $oauth_token = null, APICache $cache = null, $silent = true)
     {
-        $this->client_id = $client_id;
-        $this->client_secret = $client_secret;
-        $this->oauth_token = $oauth_token;
-        $this->cache = is_null($cache) ? new MemoryCache() : $cache;
+        $this->setClientID($client_id);
+        $this->setClientSecret($client_secret);
+        $this->setOAuthToken($oauth_token);
+        $this->setCache($cache);
+        $this->setSilent($silent);
         $this->setupResources();
     }
     
@@ -151,7 +157,17 @@ class API
     
     public function setCache(APICache $cache)
     {
-        $this->cache = $cache;
+        $this->cache = (is_null($cache)) ? new MemoryCache() : $cache;
+    }
+    
+    public function isSilent()
+    {
+        return $this->silent;
+    }
+    
+    public function setSilent($silent)
+    {
+        $this->silent = (bool) $silent;
     }
     
     /* =========================================================================
@@ -418,11 +434,15 @@ class API
     
     private function doRequest($url, $settings, $query = array(), $content = null, $auth = false, $header = array())
     {
+        if ($auth && !isset($this->auth)) {
+            if ($this->silent)
+                return false;
+            throw new AuthentificationException();
+        }
+        
         $url = $this->applyQuery($url, $query);
         $header = $this->applyHeader($header, $auth);
         $settings = call_user_func($settings, $content);
-        if (!$url || !$header || !$settings)
-            return false;
         
         $set = array(
             CURLOPT_FOLLOWLOCATION  => true,
@@ -441,8 +461,12 @@ class API
         $error = curl_errno($curl);
         curl_close($curl);
         
-        if ($error > 0)
-            return false;
+        if ($error > 0) {
+            if ($this->silent)
+                return false;
+            
+            throw new Exception();
+        }
         
         return $this->handleResponse($response);
     }
@@ -487,10 +511,7 @@ class API
     }
     
     private function applyHeader($header, $auth = false)
-    {
-        if ($auth && !isset($this->oauth_token))
-            return false;
-        
+    {        
         $default = array(
             'Accept'    => 'application/vnd.twitchtv.v5+json',
             'Client-ID' => $this->client_id,
@@ -510,12 +531,34 @@ class API
     
     private function handleResponse($response)
     {
-        if (empty($response) || is_null($response))
+        if (empty($response) || is_null($response) || $response == 'No Content')
             return null;
         
         $json = \json_decode($response);
-        if (\json_last_error() != JSON_ERROR_NONE || isset($json->error))
+        if (\json_last_error() != JSON_ERROR_NONE)
             return false;
+        
+        if (isset($json->error)) {
+            if ($this->silent)
+                return false;
+            
+            switch ($json->status) {
+                case 400:
+                    throw new InvalidRequestException();
+                    break;
+                case 401:
+                    throw new PermissionException($this->scope);
+                    break;
+                case 404:
+                    return false;
+                default:
+                    throw new Exception($json->error);
+                    break;
+            }
+        }
+        
+        // Reset scope
+        $this->scope = null;
         
         return $json;
     }
