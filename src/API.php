@@ -191,8 +191,8 @@ class API
             'search'        => new Search($this),
             'streams'       => new Streams($this),
             'teams'         => new Teams($this),
-            'users'         => new Users($this);
-            'vhs'           => new VHS($this);
+            'users'         => new Users($this),
+            'vhs'           => new VHS($this),
             'videos'        => new Videos($this),
         );
     }
