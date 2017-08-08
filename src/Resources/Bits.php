@@ -45,6 +45,10 @@ class Bits extends Resource
      * 
      * @param string|integer|object|array|null $channel The Channel-ID or Channel-Object from where it should retrieve it (optional)
      * @return false|object Object returned from the Twitch-API or false on failure
+     * 
+     * @throws \Kamui\Exceptions\InvalidRequestException When Exceptions are enabled and the request was invalid
+     * @throws \Kamui\Exceptions\PermissionException When Exceptions are enabled and the endpoint requires permissions that aren't met
+     * @throws \Kamui\Exceptions\AuthentificationException When Exceptions are enabled and the endpoint requires authentification (user-permission)
      *
      * @see https://dev.twitch.tv/docs/v5/reference/bits/#get-cheermotes
      */
