@@ -28,20 +28,28 @@ use Kamui\API;
 
 class ResourceCase extends TestCase
 {
-    protected $api;
+    protected $public;
+    protected $personal;
+    
     protected $name = 'prefixaut';
+    protected $inaccessable = 'ESL_CSGO';
     protected $id = 25391134;
+    
     private $root;
     
     public function setUp()
     {
-        $root = dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR;
+        $root = dirname(__DIR__) . DIRECTORY_SEPARATOR;
         
         $client_id = $this->getVaribale('TWITCH_CLIENT_ID', 'client_id.txt');
         $secret = $this->getVaribale('TWITCH_CLIENT_SECRET', 'secret.txt');
-        $oauth = $this->getVaribale('TWITCH_OAUTH_TOKEN', 'oauth.txt');
+        $auth = $this->getVaribale('TWITCH_AUTH_TOKEN', 'oauth.txt');
         
-        $this->api = new API($client_id, $secret, $oauth);
+        $this->personal = new API($client_id, $secret, $auth);
+        $this->public = new API($client_id, $secret);
+        
+        $this->personal->setSilent(false);
+        $this->public->setSilent(false);
     }
     
     private function getVaribale($env, $file)
