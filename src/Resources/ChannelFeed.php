@@ -26,6 +26,11 @@ namespace Kamui\Resources;
 use Kamui\API;
 use Kamui\Resource;
 
+/**
+ * Resource for the Channel-Feed Endpoint.
+ *
+ * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/
+ */
 class ChannelFeed extends Resource
 {
     public function __construct(API $api)
@@ -33,6 +38,24 @@ class ChannelFeed extends Resource
         $this->api = $api;
     }
     
+    /**
+     * Gets either all or a specified post of a channel.
+     * When the post is left out (or set to null) it'll retrieve all posts of
+     * the channel.
+     * 
+     * @param string|integer|object|array $channel The Channel-ID or Channel-Object which hosts the Post(s)
+     * @param string|integer|object|array|null $post The Post-ID or Post-Object or null to get all
+     * @param array $args Array of Arguments as defined in the Twitch Documentation (unfiltered, but will be url-escaped)
+     * @param boolean $auth If it should use the (optional) authentification in the request
+     * @return false|object Object returned from the Twitch-API or false on failure
+     * 
+     * @throws \Kamui\Exceptions\InvalidRequestException When Exceptions are enabled and the request was invalid
+     * @throws \Kamui\Exceptions\PermissionException When Exceptions are enabled and the endpoint requires permissions that aren't met
+     * @throws \Kamui\Exceptions\AuthentificationException When Exceptions are enabled and the endpoint requires authentification (user-permission)
+     *
+     * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#get-multiple-feed-posts
+     * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#get-feed-post
+     */
     public function getPost($channel, $post = null, $args = array(), $auth = false)
     {
         $channel_id = $this->api->getUserID($channel);
@@ -52,6 +75,21 @@ class ChannelFeed extends Resource
         return $this->api->sendGet("feed/{$channel_id}/posts/{$post_id}", $args, $auth);
     }
     
+    /**
+     * Creates a post on the given Channel.
+     * Requires the <code>channel_feed_edit</code> Scope (Auth)
+     * 
+     * @param string|integer|object|array $channel The Channel-ID or Channel-Object to where the post belongs to
+     * @param string $content Raw content that is being posted
+     * @param boolean $share If the content should be shared via social-media (When the Channel has them connected). Defaults to false
+     * @return false|object Object returned from the Twitch-API or false on failure
+     *
+     * @throws \Kamui\Exceptions\InvalidRequestException When Exceptions are enabled and the request was invalid
+     * @throws \Kamui\Exceptions\PermissionException When Exceptions are enabled and the endpoint requires permissions that aren't met
+     * @throws \Kamui\Exceptions\AuthentificationException When Exceptions are enabled and the endpoint requires authentification (user-permission)
+     * 
+     * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#create-feed-post
+     */
     public function createPost($channel, $content, $share = false)
     {
         $id = $this->api->getUserID($channel);
@@ -70,6 +108,20 @@ class ChannelFeed extends Resource
         $this->sendPostJson("feed/{$id}/posts", $content, $args, true);
     }
     
+    /**
+     * Deletes a specific Post from a Channel
+     * Requires the <code>channel_feed_edit</code> Scope (Auth)
+     * 
+     * @param string|integer|object|array $channel The Channel-ID or Channel-Object which hosts the Post
+     * @param string|integer|object|array $post The Post-ID or Post-Object you want to delete
+     * @return false|object Object returned from the Twitch-API or false on failure
+     *
+     * @throws \Kamui\Exceptions\InvalidRequestException When Exceptions are enabled and the request was invalid
+     * @throws \Kamui\Exceptions\PermissionException When Exceptions are enabled and the endpoint requires permissions that aren't met
+     * @throws \Kamui\Exceptions\AuthentificationException When Exceptions are enabled and the endpoint requires authentification (user-permission)
+     * 
+     * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#delete-feed-post
+     */
     public function deletePost($channel, $post)
     {
         $channel_id = $this->getUserID($channel);
@@ -81,6 +133,21 @@ class ChannelFeed extends Resource
         return $this->sendDelete("feed/{$channel_id}/posts/{$post_id}", array(), true);
     }
     
+    /**
+     * React/Create a reaction to a Post
+     * Requires the <code>channel_feed_edit</code> Scope (Auth)
+     * 
+     * @param string|integer|object|array $channel The Channel-ID or Channel-Object which hosts the Post
+     * @param string|object|array $post The Post-ID or Post-Object which should be reacted to
+     * @param string|integer $emote The Emote-ID or Emote-Name which acts as reaction
+     * @return false|object Object returned from the Twitch-API or false on failure
+     *
+     * @throws \Kamui\Exceptions\InvalidRequestException When Exceptions are enabled and the request was invalid
+     * @throws \Kamui\Exceptions\PermissionException When Exceptions are enabled and the endpoint requires permissions that aren't met
+     * @throws \Kamui\Exceptions\AuthentificationException When Exceptions are enabled and the endpoint requires authentification (user-permission)
+     * 
+     * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#create-reaction-to-a-feed-post
+     */
     public function reactToPost($channel, $post, $emote)
     {
         $channel_id = $this->getUserID($channel);
@@ -97,6 +164,21 @@ class ChannelFeed extends Resource
         return $this->api->sendPost("feed/{$channel_id}/posts/{$post_id}/reactions", $args, null, true);
     }
     
+    /**
+     * Unreact/Delete a reaction from a Post
+     * Requires the <code>channel_feed_edit</code> Scope (Auth)
+     * 
+     * @param string|integer|object|array $channel The Channel-ID or Channel-Object which hosts the Post
+     * @param string|object|array $post The Post-ID or Post-Object which has the reaction on it
+     * @param string|integer $emote The Emote-ID or Emote-Name that should be removed
+     * @return false|object Object from the Twitch-API or false on failure
+     *
+     * @throws \Kamui\Exceptions\InvalidRequestException When Exceptions are enabled and the request was invalid
+     * @throws \Kamui\Exceptions\PermissionException When Exceptions are enabled and the endpoint requires permissions that aren't met
+     * @throws \Kamui\Exceptions\AuthentificationException When Exceptions are enabled and the endpoint requires authentification (user-permission)
+     * 
+     * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#delete-reaction-to-a-feed-post
+     */
     public function unreactToPost($channel, $post, $emote)
     {
         $channel_id = $this->getUserID($channel);
@@ -114,6 +196,20 @@ class ChannelFeed extends Resource
     
     }
     
+    /**
+     * Gets all Comments from a Post
+     *
+     * @param string|integer|object|array $channel The Channel-ID or Channel-Object which hosts the Post
+     * @param string|object|array $post The Post-ID or Post-Object from which the comments will be loaded from
+     * @param array $args Array of Arguments that will be passed to the request
+     * @return false|object Object from the Twitch-API or false on failure
+     * 
+     * @throws \Kamui\Exceptions\InvalidRequestException When Exceptions are enabled and the request was invalid
+     * @throws \Kamui\Exceptions\PermissionException When Exceptions are enabled and the endpoint requires permissions that aren't met
+     * @throws \Kamui\Exceptions\AuthentificationException When Exceptions are enabled and the endpoint requires authentification (user-permission)
+     * 
+     * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#get-feed-comments
+     */
     public function getComments($channel, $post, $args = array())
     {
         $channel_id = $this->api->getUserID($channel);
@@ -124,6 +220,20 @@ class ChannelFeed extends Resource
         return $this->api->sendGet("feed/{$channel_id}/posts/{$post_id}/comments", $args, true);
     }
     
+    /**
+     * Creates a new Comment to a Post
+     *
+     * @param string|integer|object|array $channel The Channel-ID or Channel-Object which hosts the Post
+     * @param string|object|array $post The Post-ID or Post-Object which should be commented to
+     * @param mixed $content The content of the Comment
+     * @return false|object Object from the Twitch-API or false on failure
+     * 
+     * @throws \Kamui\Exceptions\InvalidRequestException When Exceptions are enabled and the request was invalid
+     * @throws \Kamui\Exceptions\PermissionException When Exceptions are enabled and the endpoint requires permissions that aren't met
+     * @throws \Kamui\Exceptions\AuthentificationException When Exceptions are enabled and the endpoint requires authentification (user-permission)
+     * 
+     * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#create-feed-comment
+     */
     public function createComment($channel, $post, $content)
     {
         $channel_id = $this->api->getUserID($channel);
@@ -139,6 +249,20 @@ class ChannelFeed extends Resource
         return $this->api->sendPostJson("feed/{$channel_id}/posts/{$post_id}/comments", $content, array(), true);
     }
     
+    /**
+     * Deletes a Comment on a Post
+     *
+     * @param string|integer|object|array $channel The Channel-ID or Channel-Object which hosts the Post
+     * @param string|object|array $post The Post-ID or Post-Object which hosts the comment
+     * @param string|integer|object|array $comment The Comment-ID or Comment-Object which should be deleted
+     * @return false|object Object from the Twitch-API or false on failure
+     * 
+     * @throws \Kamui\Exceptions\InvalidRequestException When Exceptions are enabled and the request was invalid
+     * @throws \Kamui\Exceptions\PermissionException When Exceptions are enabled and the endpoint requires permissions that aren't met
+     * @throws \Kamui\Exceptions\AuthentificationException When Exceptions are enabled and the endpoint requires authentification (user-permission)
+     * 
+     * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#delete-feed-comment
+     */
     public function deleteComment($channel, $post, $comment)
     {
         $channel_id = $this->api->getUserID($channel);
@@ -151,6 +275,21 @@ class ChannelFeed extends Resource
         return $this->api->sendDelete("feed/{$channel_id}/posts/{$post_id}/comments/{$comment_id}", array(), true);
     }
     
+    /**
+     * Creates a reaction to a Post-Comment
+     *
+     * @param string|integer|object|array $channel The Channel-ID or Channel-Object which hosts the Post
+     * @param string|object|array $post The Post-ID or Post-Object which hosts the comment
+     * @param string|integer|object|array $comment The Comment-ID or Comment-Object which should be reacted to
+     * @param string|integer|object|array $emote The Emote-ID, Emote-Name or Emote-Object which should be used for the reaction
+     * @return false|object Object from the Twitch-API or false on failure
+     * 
+     * @throws \Kamui\Exceptions\InvalidRequestException When Exceptions are enabled and the request was invalid
+     * @throws \Kamui\Exceptions\PermissionException When Exceptions are enabled and the endpoint requires permissions that aren't met
+     * @throws \Kamui\Exceptions\AuthentificationException When Exceptions are enabled and the endpoint requires authentification (user-permission)
+     * 
+     * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#create-reaction-to-a-feed-comment
+     */
     public function reactToComment($channel, $post, $comment, $emote)
     {
         $channel_id = $this->api->getUserID($channel);
@@ -168,6 +307,21 @@ class ChannelFeed extends Resource
         return $this->api->sendPost("feed/{$channel_id}/posts/{$post_id}/comments/{$comment_id}/reactions", $args, null, true);
     }
     
+    /**
+     * Deletes a reaction of a Post-Comment
+     *
+     * @param string|integer|object|array $channel The Channel-ID or Channel-Object which hosts the Post
+     * @param string|object|array $post The Post-ID or Post-Object which hosts the comment
+     * @param string|integer|object|array $comment The Comment-ID or Comment-Object which should be un-reacted to
+     * @param string|integer|object|array $emote The Emote-ID, Emote-Name or Emote-Object which should be used for the deletion
+     * @return false|object Object from the Twitch-API or false on failure
+     * 
+     * @throws \Kamui\Exceptions\InvalidRequestException When Exceptions are enabled and the request was invalid
+     * @throws \Kamui\Exceptions\PermissionException When Exceptions are enabled and the endpoint requires permissions that aren't met
+     * @throws \Kamui\Exceptions\AuthentificationException When Exceptions are enabled and the endpoint requires authentification (user-permission)
+     * 
+     * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#delete-reaction-to-a-feed-comment
+     */
     public function dereactToComment($channel, $post, $comment, $emote)
     {
         $channel_id = $this->api->getUserID($channel);
