@@ -52,7 +52,7 @@ class ResourceCase extends TestCase
         $this->public->setSilent(false);
     }
     
-    private function getVaribale($env, $file)
+    protected function getVaribale($env, $file)
     {
         if (isset($_ENV[$env]))
             return $_ENV[$env];
@@ -61,5 +61,12 @@ class ResourceCase extends TestCase
             return trim(@file_get_contents($this->root . $file));
         
         return null;
+    }
+
+    public function assertObjectHasProperties($object, $properties)
+    {
+        foreach ($properties as $index => $prop) {
+            $this->assertTrue(property_exists($object, $prop));
+        }
     }
 }
