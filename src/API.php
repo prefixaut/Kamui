@@ -27,6 +27,7 @@ use Kamui\Resource;
 use Kamui\Exceptions\AuthentificationException;
 use Kamui\Exceptions\InvalidRequestException;
 use Kamui\Exceptions\PermissionException;
+use Kamui\Exceptions\UnknownException;
 use Kamui\Helpers\Emotes;
 use Kamui\Resources\Bits;
 use Kamui\Resources\ChannelFeed;
@@ -277,8 +278,7 @@ class API
     
     public function saveCache($key, $value, $duration = 300)
     {
-        $item = $this->cache->get($key);
-        $item->lock();
+        $item = $this->cache->getItem($key);
         $item->expiresAfter($duration);
         $item->set($value);
         $this->cache->save($item);
@@ -286,15 +286,15 @@ class API
     
     public function retainCache($key)
     {
-        $item = $this->cache->get($key);
+        $item = $this->cache->getItem($key);
         return $item->get();
     }
     
     public function hasCache($key)
     {
-        $item = $this->cache->get($key);
+        $item = $this->cache->getItem($key);
         $data = $item->get();
-        return $item->isMiss();
+        return !$item->isMiss();
     }
     
     public function getAuthentificationUrl($redirect, $type, $scopes, $args = array())
@@ -322,6 +322,9 @@ class API
             
             return $id;
         }
+
+        if (!is_string($user))
+            return false;
         
         $key = 'user_' . strtolower($user);
         if ($this->hasCache($key))
@@ -373,6 +376,9 @@ class API
             }
             return $id;
         }
+
+        if (!is_string($community))
+            return false;
         
         $key = 'community_' . strtolower($community);
         if ($this->hasCache($key))
@@ -428,13 +434,21 @@ class API
     
     private function getGenericID($object, $field = 'id', $number = true)
     {
-        if ($object === false)
+        if ($object === false || empty($object))
+            return false;
+
+        if (is_float($object) && is_nan($object))
             return false;
         
+        if ((is_integer($object) || is_float($object)) && $object < 0)
+            return false;
+
         if ($number && is_numeric($object)) {
             try {
                 return intval($object);
-            } catch (Exception $e) {}
+            } catch (Exception $e) {
+                return false;
+            }
         }
         
         if (is_array($object) && isset($object[$field]))
@@ -460,7 +474,7 @@ class API
     
     private function doRequest($url, $settings, $query = array(), $content = null, $auth = false, $header = array())
     {
-        if ($auth && !isset($this->auth)) {
+        if ($auth && !isset($this->oauth_token)) {
             if ($this->silent)
                 return false;
             throw new AuthentificationException();
@@ -578,7 +592,7 @@ class API
                 case 404:
                     return false;
                 default:
-                    throw new Exception($json->error);
+                    throw new UnknownException($json->error);
                     break;
             }
         }
