@@ -153,7 +153,7 @@ class ChannelsTest extends ResourceCase
     
     function testFollowers()
     {
-        $data = $this->public->channels->followers($this->name);
+        $data = $this->public->channels->follows($this->name);
         
         $this->assertNotFalse($data);
         $this->assertObjecthasProperties($data, array('_cursor', '_total', 'follows'));
@@ -216,6 +216,8 @@ class ChannelsTest extends ResourceCase
         $this->assertFalse($this->public->channels->videos(-1));
     }
 
+    /*
+    // TODO: Find a proper way to test this, since it'll throw an HTTP-400 when the channel is not live
     function testCommercial()
     {
         $data = $this->personal->channels->commercial($this->name, 30);
@@ -228,6 +230,7 @@ class ChannelsTest extends ResourceCase
         $this->assertFalse($this->personal->channels->commercial(new \stdClass, 30));
         $this->assertFalse($this->personal->channels->commercial(-1, 30));
     }
+    */
 
     function testCommercialAuthentification()
     {
@@ -235,16 +238,14 @@ class ChannelsTest extends ResourceCase
         $this->public->channels->commercial($this->name, 30);
     }
 
+    /*
+    // Should be thrown according to documentation
     function testCommercialInvalidDuration()
     {
-        /*
-            // Should be thrown according to documentation
         $this->expectException(UnknownException::class);
         $this->personal->channels->startCommercial($this->name, 0);
-        */
-        // Dummy test to prevent phpunit to cry about it
-        $this->assertTrue(true);
     }
+    */
 
     /*
         TODO: Tests for:
