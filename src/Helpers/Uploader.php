@@ -23,8 +23,6 @@
 
 namespace Kamui\Helpers;
 
-use Kamui\API;
-
 class Uploader
 {
     private $api;
@@ -41,7 +39,7 @@ class Uploader
         'video/x-flv',
     );
     
-    public function __construct(API $api)
+    public function __construct(Kamui\API $api)
     {
         $this->api = $api;
     }

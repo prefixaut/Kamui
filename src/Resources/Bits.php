@@ -23,17 +23,14 @@
 
 namespace Kamui\Resources;
 
-use Kamui\API;
-use Kamui\BaseResource;
-
 /**
  * Resource for the Bits Endpoint.
  *
  * @see https://dev.twitch.tv/docs/v5/reference/bits/
  */
-class Bits extends BaseResource
+class Bits extends Kamui\BaseResource
 {
-    public function __construct(API $api)
+    public function __construct(Kamui\API $api)
     {
         parent::__construct($api);
     }

@@ -23,12 +23,9 @@
 
 namespace Kamui\Resources;
 
-use Kamui\API;
-use Kamui\BaseResource;
-
-class Clips extends BaseResource
+class Clips extends Kamui\BaseResource
 {
-    public function __construct(API $api)
+    public function __construct(Kamui\API $api)
     {
         parent::__construct($api);
     }

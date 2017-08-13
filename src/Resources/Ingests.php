@@ -23,12 +23,9 @@
 
 namespace Kamui\Resources;
 
-use Kamui\API;
-use Kamui\BaseResource;
-
-class Ingests extends BaseResource
+class Ingests extends Kamui\BaseResource
 {
-    public function __construct(API $api)
+    public function __construct(Kamui\API $api)
     {
         parent::__construct($api);
     }
