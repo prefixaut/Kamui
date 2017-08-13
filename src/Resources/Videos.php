@@ -23,9 +23,13 @@
 
 namespace Kamui\Resources;
 
-class Videos extends Kamui\BaseResource
+use Kamui\API;
+use Kamui\BaseResource;
+use Kamui\Helpers\Uploader;
+
+class Videos extends BaseResource
 {
-    public function __construct(Kamui\API $api)
+    public function __construct(API $api)
     {
         parent::__construct($api);
     }
@@ -67,7 +71,7 @@ class Videos extends Kamui\BaseResource
     
     public function upload($channel, $title, $file, $args = array())
     {
-        $uploader = new Kamui\Uploader($this->api);
+        $uploader = new Uploader($this->api);
         return $uploader->uploadVideo($channel, $title, $file, $args);
     }
     

@@ -23,9 +23,12 @@
 
 namespace Kamui\Resources;
 
-class Games extends Kamui\BaseResource
+use Kamui\API;
+use Kamui\BaseResource;
+
+class Games extends BaseResource
 {
-    public function __construct(Kamui\API $api)
+    public function __construct(API $api)
     {
         parent::__construct($api);
     }

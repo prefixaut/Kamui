@@ -23,6 +23,31 @@
 
 namespace Kamui;
 
+use Kamui\Resource;
+use Kamui\Exceptions\AuthentificationException;
+use Kamui\Exceptions\InvalidRequestException;
+use Kamui\Exceptions\PermissionException;
+use Kamui\Exceptions\UnknownException;
+use Kamui\Helpers\Emotes;
+use Kamui\Resources\Bits;
+use Kamui\Resources\ChannelFeed;
+use Kamui\Resources\Channels;
+use Kamui\Resources\Chat;
+use Kamui\Resources\Clips;
+use Kamui\Resources\Collections;
+use Kamui\Resources\Communities;
+use Kamui\Resources\Games;
+use Kamui\Resources\Ingests;
+use Kamui\Resources\Search;
+use Kamui\Resources\Streams;
+use Kamui\Resources\Teams;
+use Kamui\Resources\Users;
+use Kamui\Resources\Videos;
+use Kamui\Resources\VHS;
+use Stash\Pool;
+use Stash\Interfaces\DriverInterface;
+use Stash\Driver\FileSystem;
+
 class API
 {
     /* =========================================================================
@@ -134,8 +159,8 @@ class API
     
     public function setCache($cache)
     {
-        $driver = (is_null($cache) || !($cache instanceof Stach\DriverInterface)) ? new Stach\FileSystem() : $cache;
-        $this->cache = new Stach\Pool($driver);
+        $driver = (is_null($cache) || !($cache instanceof DriverInterface)) ? new FileSystem() : $cache;
+        $this->cache = new Pool($driver);
     }
     
     public function isSilent()
@@ -155,21 +180,21 @@ class API
     private function setupResources()
     {
         $this->resources = array(
-            'bits'          => new Kamui\Resources\Bits($this),
-            'feed'          => new Kamui\Resources\ChannelFeed($this),
-            'channels'      => new Kamui\Resources\Channels($this),
-            'chat'          => new Kamui\Resources\Chat($this),
-            'clips'         => new Kamui\Resources\Clips($this),
-            'collections'   => new Kamui\Resources\Collections($this),
-            'communites'    => new Kamui\Resources\Communities($this),
-            'games'         => new Kamui\Resources\Games($this),
-            'ingests'       => new Kamui\Resources\Ingests($this),
-            'search'        => new Kamui\Resources\Search($this),
-            'streams'       => new Kamui\Resources\Streams($this),
-            'teams'         => new Kamui\Resources\Teams($this),
-            'users'         => new Kamui\Resources\Users($this),
-            'vhs'           => new Kamui\Resources\VHS($this),
-            'videos'        => new Kamui\Resources\Videos($this),
+            'bits'          => new Bits($this),
+            'feed'          => new ChannelFeed($this),
+            'channels'      => new Channels($this),
+            'chat'          => new Chat($this),
+            'clips'         => new Clips($this),
+            'collections'   => new Collections($this),
+            'communites'    => new Communities($this),
+            'games'         => new Games($this),
+            'ingests'       => new Ingests($this),
+            'search'        => new Search($this),
+            'streams'       => new Streams($this),
+            'teams'         => new Teams($this),
+            'users'         => new Users($this),
+            'vhs'           => new VHS($this),
+            'videos'        => new Videos($this),
         );
     }
     
@@ -268,7 +293,7 @@ class API
     public function hasCache($key)
     {
         $item = $this->cache->getItem($key);
-        $item->get();
+        $data = $item->get();
         return !$item->isMiss();
     }
     
@@ -336,7 +361,7 @@ class API
         if ($id)
             return $id;
         
-        $item = Kamui\Helpers\Emotes::get($emote);
+        $item = Emotes::get($emote);
         return (!$item) ? false : $item['image_id'];
     }
     
@@ -421,7 +446,7 @@ class API
         if ($number && is_numeric($object)) {
             try {
                 return intval($object);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 return false;
             }
         }
@@ -452,7 +477,7 @@ class API
         if ($auth && !isset($this->oauth_token)) {
             if ($this->silent)
                 return false;
-            throw new Kamui\Exceptions\AuthentificationException();
+            throw new AuthentificationException();
         }
         
         $url = $this->applyQuery($url, $query);
@@ -559,15 +584,15 @@ class API
             
             switch ($json->status) {
                 case 400:
-                    throw new Kamui\Exceptions\InvalidRequestException($json->error);
+                    throw new InvalidRequestException($json->error);
                     break;
                 case 401:
-                    throw new Kamui\Exceptions\PermissionException($this->scope);
+                    throw new PermissionException($this->scope);
                     break;
                 case 404:
                     return false;
                 default:
-                    throw new Kamui\Exceptions\UnknownException($json->error);
+                    throw new UnknownException($json->error);
                     break;
             }
         }

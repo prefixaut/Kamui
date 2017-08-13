@@ -23,9 +23,12 @@
 
 namespace Kamui\Resources;
 
-class Users extends Kamui\BaseResource
+use Kamui\API;
+use Kamui\BaseResource;
+
+class Users extends BaseResource
 {
-    public function __construct(Kamui\API $api)
+    public function __construct(API $api)
     {
         parent::__construct($api);
     }

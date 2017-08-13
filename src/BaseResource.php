@@ -23,11 +23,13 @@
 
 namespace Kamui;
 
+use Kamui\API;
+
 class BaseResource
 {
     protected $api;
     
-    public function __construct(Kamui\API $api)
+    public function __construct(API $api)
     {
         $this->api = $api;
     }
