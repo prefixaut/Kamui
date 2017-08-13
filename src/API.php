@@ -23,7 +23,7 @@
 
 namespace Kamui;
 
-use Kamui\Resource;
+use Kamui\BaseResource;
 use Kamui\Exceptions\AuthentificationException;
 use Kamui\Exceptions\InvalidRequestException;
 use Kamui\Exceptions\PermissionException;
@@ -101,7 +101,7 @@ class API
     
     public function __set($name, $value)
     {
-        if (!is_string($name) || !($name instanceof Kamui\BaseResource))
+        if (!is_string($name) || !($name instanceof BaseResource))
             return;
         
         $this->resources[$name] = $value;
@@ -446,7 +446,7 @@ class API
         if ($number && is_numeric($object)) {
             try {
                 return intval($object);
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 return false;
             }
         }
@@ -505,7 +505,7 @@ class API
             if ($this->silent)
                 return false;
             
-            throw new Exception();
+            throw new UnknownException();
         }
         
         return $this->handleResponse($response);
