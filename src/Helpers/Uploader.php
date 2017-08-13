@@ -28,7 +28,6 @@ use Kamui\API;
 class Uploader
 {
     private $api;
-    private $base_url = 'https://uploads.twitch.tv/';
     
     private $video_max_size = 1024 * 1024 * 25; // 25MB
     private $video_types = array(
@@ -62,6 +61,12 @@ class Uploader
         $mime_info = finfo_open(FILEINFO_MIME_TYPE);
         $mine = finfo_file($mime_info, $file);
         finfo_close($mime_info);
+
+        // Check if it is a valid type to be uploaded
+        if (!in_array($mine, $this->video_types)) {
+            return false;
+        }
+
         $size = filesize($file);
         
         if ($size > $this->video_max_size) {
@@ -108,7 +113,7 @@ class Uploader
             ),
             CURLOPT_POSTFIELDS      => $content,
         ));
-        $response = curl_exec($curl);
+        curl_exec($curl);
         $error = curl_errno($curl);
         curl_close($curl);
         

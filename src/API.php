@@ -293,7 +293,7 @@ class API
     public function hasCache($key)
     {
         $item = $this->cache->getItem($key);
-        $data = $item->get();
+        $item->get();
         return !$item->isMiss();
     }
     
@@ -387,7 +387,7 @@ class API
         if (!$fetch)
             return false;
         
-        $res = $this->api->sendGet('communities', $args = array(
+        $res = $this->sendGet('communities', array(
             'name'  => $community,
         ));
         
@@ -425,7 +425,7 @@ class API
         if (is_object($item) && isset($item->{$field}))
             return $item->{$field};
         
-        return 'video';
+        return $default;
     }
     
     /* =========================================================================
@@ -551,7 +551,7 @@ class API
     }
     
     private function applyHeader($header, $auth = false)
-    {        
+    {
         $default = array(
             'Accept'    => 'application/vnd.twitchtv.v5+json',
             'Client-ID' => $this->client_id,
