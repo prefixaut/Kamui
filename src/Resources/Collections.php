@@ -72,21 +72,6 @@ class Collections extends Kamui\BaseResource
         return $this->api->sendPutJson("collections/{$id}", $args, array(), true);
     }
     
-    public function thumbnail($collection, $item)
-    {
-        $collection_id = $this->api->getCollectionID($collection);
-        $item_id = $this->api->getCollectionItemID($item);
-        if (!$collection_id || !$item_id)
-            return false;
-        
-        $data = array(
-            'item_id'   => $item_id,
-        );
-        
-        $this->api->scope = 'collections_edit';
-        return $this->sendPutJson("collections/{$collection_id}/thumbnail", $data, array(), true);
-    }
-    
     public function delete($collection, $item = null)
     {
         $collection_id = $this->api->getCollectionID($collection);
@@ -138,5 +123,20 @@ class Collections extends Kamui\BaseResource
         
         $this->api->scope = 'collections_edit';
         $this->sendPutJson("collections/{$collection_id}/items/{$item_id}", $data, array(), true);
+    }
+
+    public function thumbnail($collection, $item)
+    {
+        $collection_id = $this->api->getCollectionID($collection);
+        $item_id = $this->api->getCollectionItemID($item);
+        if (!$collection_id || !$item_id)
+            return false;
+        
+        $data = array(
+            'item_id'   => $item_id,
+        );
+        
+        $this->api->scope = 'collections_edit';
+        return $this->sendPutJson("collections/{$collection_id}/thumbnail", $data, array(), true);
     }
 }

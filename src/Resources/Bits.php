@@ -49,7 +49,7 @@ class Bits extends Kamui\BaseResource
      *
      * @see https://dev.twitch.tv/docs/v5/reference/bits/#get-cheermotes
      */
-    public function get($channel = null)
+    public function actions($channel = null)
     {
         $args = array();
         if (!is_null($channel)) {

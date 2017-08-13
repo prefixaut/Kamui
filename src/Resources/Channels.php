@@ -68,7 +68,7 @@ class Channels extends Kamui\BaseResource
         return $this->api->sendGet("channels/{$id}/editors", array(), true);
     }
     
-    public function followers($channel)
+    public function follows($channel)
     {
         $id = $this->api->getUserID($channel);
         if (!$id)
@@ -86,7 +86,7 @@ class Channels extends Kamui\BaseResource
         return $this->api->sendGet("channels/{$id}/teams");
     }
     
-    public function subscribers($channel, $args = array())
+    public function subscriptions($channel, $args = array())
     {
         $id = $this->api->getUserID($channel);
         if (!$id)
@@ -96,7 +96,7 @@ class Channels extends Kamui\BaseResource
         return $this->api->sendGet("channels/{$id}/subscriptions", $args, true);
     }
     
-    public function subscriber($channel, $user)
+    public function subscription($channel, $user)
     {
         $channel_id = $this->api->getUserID($channel);
         $user_id = $this->api->getUserID($user);
@@ -125,7 +125,7 @@ class Channels extends Kamui\BaseResource
         return $this->api->sendGet("channels/{$id}/collections", $args);
     }
     
-    public function startCommercial($channel, $duration)
+    public function commercial($channel, $duration)
     {
         $id = $this->api->getUserID($channel);
         if (!$id)
@@ -139,7 +139,7 @@ class Channels extends Kamui\BaseResource
         return $this->api->sendPostJson("channels/{$id}/commercial", $content, array(), true);
     }
     
-    public function resetStreamKey($channel)
+    public function streamKey($channel)
     {
         $id = $this->api->getUserID($channel);
         if (!$id)

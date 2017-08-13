@@ -39,7 +39,7 @@ class Chat extends Kamui\BaseResource
         return $this->api->sendGet("chat/{$id}/badges");
     }
     
-    public function emotes($images = false, $emotes = array())
+    public function emoticons($images = false, $emotes = array())
     {
         if ($images)
             return $this->api->sendGet('chat/emoticons');

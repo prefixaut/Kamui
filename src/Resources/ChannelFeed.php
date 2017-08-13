@@ -145,7 +145,7 @@ class ChannelFeed extends Kamui\BaseResource
      * 
      * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#create-reaction-to-a-feed-post
      */
-    public function reactToPost($channel, $post, $emote)
+    public function createPostReaction($channel, $post, $emote)
     {
         $channel_id = $this->getUserID($channel);
         $post_id = $this->getPostID($post);
@@ -176,7 +176,7 @@ class ChannelFeed extends Kamui\BaseResource
      * 
      * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#delete-reaction-to-a-feed-post
      */
-    public function unreactToPost($channel, $post, $emote)
+    public function deletePostReaction($channel, $post, $emote)
     {
         $channel_id = $this->getUserID($channel);
         $post_id = $this->getPostID($post);
@@ -194,7 +194,7 @@ class ChannelFeed extends Kamui\BaseResource
     }
     
     /**
-     * Gets all Comments from a Post
+     * Gets all comments on a specified post in a specified channel feed.
      *
      * @param string|integer|object|array $channel The Channel-ID or Channel-Object which hosts the Post
      * @param string|object|array $post The Post-ID or Post-Object from which the comments will be loaded from
@@ -218,7 +218,8 @@ class ChannelFeed extends Kamui\BaseResource
     }
     
     /**
-     * Creates a new Comment to a Post
+     * Creates a comment to a specified post in a specified channel feed.
+     * Requires the <code>channel_feed_edit</code> Scope (Auth)
      *
      * @param string|integer|object|array $channel The Channel-ID or Channel-Object which hosts the Post
      * @param string|object|array $post The Post-ID or Post-Object which should be commented to
@@ -247,7 +248,8 @@ class ChannelFeed extends Kamui\BaseResource
     }
     
     /**
-     * Deletes a Comment on a Post
+     * Deletes a specified comment on a specified post in a specified channel feed.
+     * Requires the <code>channel_feed_edit</code> Scope (Auth)
      *
      * @param string|integer|object|array $channel The Channel-ID or Channel-Object which hosts the Post
      * @param string|object|array $post The Post-ID or Post-Object which hosts the comment
@@ -273,7 +275,10 @@ class ChannelFeed extends Kamui\BaseResource
     }
     
     /**
-     * Creates a reaction to a Post-Comment
+     * Creates a reaction to a specified post in a specified channel feed.
+     * The reaction is specified by an emote value, which is either an ID (for example, “25” is Kappa),
+     * the simple Emote-Name or the Emote-Object provided by the Emote-Helper.
+     * Requires the <code>channel_feed_edit</code> Scope (Auth)
      *
      * @param string|integer|object|array $channel The Channel-ID or Channel-Object which hosts the Post
      * @param string|object|array $post The Post-ID or Post-Object which hosts the comment
@@ -287,7 +292,7 @@ class ChannelFeed extends Kamui\BaseResource
      * 
      * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#create-reaction-to-a-feed-comment
      */
-    public function reactToComment($channel, $post, $comment, $emote)
+    public function createCommentReaction($channel, $post, $comment, $emote)
     {
         $channel_id = $this->api->getUserID($channel);
         $post_id = $this->api->getPostID($post);
@@ -305,7 +310,10 @@ class ChannelFeed extends Kamui\BaseResource
     }
     
     /**
-     * Deletes a reaction of a Post-Comment
+     * Deletes a specified reaction to a specified post in a specified channel feed.
+     * The reaction is specified by an emote value, which is either an ID (for example, “25” is Kappa),
+     * the simple Emote-Name or the Emote-Object provided by the Emote-Helper.
+     * Requires the <code>channel_feed_edit</code> Scope (Auth)
      *
      * @param string|integer|object|array $channel The Channel-ID or Channel-Object which hosts the Post
      * @param string|object|array $post The Post-ID or Post-Object which hosts the comment
@@ -319,7 +327,7 @@ class ChannelFeed extends Kamui\BaseResource
      * 
      * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/#delete-reaction-to-a-feed-comment
      */
-    public function dereactToComment($channel, $post, $comment, $emote)
+    public function deleteCommentReaction($channel, $post, $comment, $emote)
     {
         $channel_id = $this->api->getUserID($channel);
         $post_id = $this->api->getPostID($post);
