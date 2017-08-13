@@ -101,7 +101,7 @@ class API
     
     public function __set($name, $value)
     {
-        if (!is_string($name) || !($name instanceof Resource))
+        if (!is_string($name) || !($name instanceof Kamui\BaseResource))
             return;
         
         $this->resources[$name] = $value;

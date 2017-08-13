@@ -24,14 +24,14 @@
 namespace Kamui\Resources;
 
 use Kamui\API;
-use Kamui\Resource;
+use Kamui\BaseResource;
 
 /**
  * Resource for the Channel-Feed Endpoint.
  *
  * @see https://dev.twitch.tv/docs/v5/reference/channel-feed/
  */
-class ChannelFeed extends Resource
+class ChannelFeed extends BaseResource
 {
     public function __construct(API $api)
     {

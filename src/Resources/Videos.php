@@ -24,10 +24,10 @@
 namespace Kamui\Resources;
 
 use Kamui\API;
-use Kamui\Resource;
+use Kamui\BaseResource;
 use Kamui\Helpers\Uploader;
 
-class Videos extends Resource
+class Videos extends BaseResource
 {
     public function __construct(API $api)
     {

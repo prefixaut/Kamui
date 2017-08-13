@@ -24,9 +24,9 @@
 namespace Kamui\Resources;
 
 use Kamui\API;
-use Kamui\Resource;
+use Kamui\BaseResource;
 
-class Streams extends Resource
+class Streams extends BaseResource
 {
     public function __construct(API $api)
     {

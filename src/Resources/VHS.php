@@ -24,9 +24,9 @@
 namespace Kamui\Resources;
 
 use Kamui\API;
-use Kamui\Resource;
+use Kamui\BaseResource;
 
-class VHS extends Resource
+class VHS extends BaseResource
 {
     public function __construct(API $api)
     {

@@ -25,7 +25,7 @@ namespace Kamui;
 
 use Kamui\API;
 
-class Resource
+class BaseResource
 {
     protected $api;
     
