@@ -23,36 +23,47 @@
 
 namespace Kamui\Helpers;
 
+use Stash\Pool;
+use Stash\Driver\FileSystem;
+
 class Emotes
 {
-    private static $last_fetch = null;
-    private static $cache = null;
+
+    private static $cache = new Pool(new FileSystem());
+    private static $key = 'emote_list';
     
     public static function get($emote)
     {
         $data = self::fetch();
         if (!$data) {
-            echo "no data";
             return false;
         }
         
         return (isset($data[$emote])) ? $data[$emote] : false;
     }
-    
+
     private static function fetch()
     {
-        if (!is_null(self::$last_fetch) && !is_null(self::$cache) && self::$last_fetch->diff(new \DateTime())->i <= 30)
-            return self::$cache;
+        $item = self::$cache->getItem(self::$key);
+        $data = $item->get();
+        if (!$item->isMiss()) {
+            return $data;
+        }
         
-        $content = @\file_get_contents("https://twitchemotes.com/api_cache/v2/global.json");        
+        try {
+            $content = \file_get_contents("https://twitchemotes.com/api_cache/v3/global.json");
+        } catch (\Exception $e) {
+            echo 'Could not fetch the emote-data from twitchemotes-api';
+            return false;
+        }
         $json = \json_decode($content, true);
         if (!$json || \json_last_error() != JSON_ERROR_NONE) {
-            echo "JSON ERROR: " . \json_last_error_msg();
+            echo 'Json-Error from the twitchemotes-api: ' . \json_last_error_msg();
             return false;
         }
         
-        self::$last_fetch = new \DateTime($json['meta']['generated_at']);
-        self::$cache = $json['emotes'];
-        return $json['emotes'];
+        $item->set($json);
+        $cache->save($item);
+        return $json;
     }
 }
