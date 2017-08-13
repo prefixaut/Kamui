@@ -134,8 +134,24 @@ class Channels extends BaseResource
         if (!$id)
             return false;
         
+        if (!is_numeric($duration)) {
+            return false;
+        }
+
+        switch (intval($duration)) {
+            case 30:
+            case 60:
+            case 90:
+            case 120:
+            case 150:
+            case 180:
+                break;
+            default:
+                return false;
+        }
+        
         $content = array(
-            'duration'  => $duration,
+            'duration'  => intval($duration),
         );
         
         $this->api->scope = 'channel_commercial';
