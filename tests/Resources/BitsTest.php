@@ -29,7 +29,7 @@ class BitsTest extends ResourceCase
 {
     public function testGetFromChannel()
     {
-        $data = $this->public->bits->get($this->name);
+        $data = $this->public->bits->actions($this->name);
 
         $this->assertNotFalse($data);
         $this->assertTrue(isset($data->actions));

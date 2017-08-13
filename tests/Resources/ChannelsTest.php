@@ -91,7 +91,6 @@ class ChannelsTest extends ResourceCase
 
     function testGetExceptions()
     {
-        $this->assertFalse($this->public->channels->get(NaN));
         $this->assertFalse($this->public->channels->get([]));
         $this->assertFalse($this->public->channels->get(new \stdClass));
         $this->assertFalse($this->public->channels->get(-1));
@@ -118,7 +117,6 @@ class ChannelsTest extends ResourceCase
             'status'    => 'this will fail anyways',
         )));
 
-        $this->assertFalse($this->personal->channels->update(NaN, new \stdClass));
         $this->assertFalse($this->personal->channels->update(null, new \stdClass));
         $this->assertFalse($this->personal->channels->update([], new \stdClass));
         $this->assertFalse($this->personal->channels->update(new \stdClass, new \stdClass));
@@ -141,7 +139,6 @@ class ChannelsTest extends ResourceCase
         $this->assertTrue(isset($data->users));
         $this->assertInternalType('array', $data->users);
 
-        $this->assertFalse($this->personal->channels->editors(NaN));
         $this->assertFalse($this->personal->channels->editors(null));
         $this->assertFalse($this->personal->channels->editors([]));
         $this->assertFalse($this->personal->channels->editors(new \stdClass));
@@ -162,11 +159,10 @@ class ChannelsTest extends ResourceCase
         $this->assertObjecthasProperties($data, array('_cursor', '_total', 'follows'));
         $this->assertInternalType('array', $data->follows);
 
-        $this->assertFalse($this->public->channels->followers(NaN));
-        $this->assertFalse($this->public->channels->followers(null));
-        $this->assertFalse($this->public->channels->followers([]));
-        $this->assertFalse($this->public->channels->followers(new \stdClass));
-        $this->assertFalse($this->public->channels->followers(-1));
+        $this->assertFalse($this->public->channels->follows(null));
+        $this->assertFalse($this->public->channels->follows([]));
+        $this->assertFalse($this->public->channels->follows(new \stdClass));
+        $this->assertFalse($this->public->channels->follows(-1));
     }
     
     function testTeams()
@@ -177,7 +173,6 @@ class ChannelsTest extends ResourceCase
         $this->assertTrue(isset($data->teams));
         $this->assertInternalType('array', $data->teams);
 
-        $this->assertFalse($this->public->channels->teams(NaN));
         $this->assertFalse($this->public->channels->teams(null));
         $this->assertFalse($this->public->channels->teams([]));
         $this->assertFalse($this->public->channels->teams(new \stdClass));
@@ -215,34 +210,32 @@ class ChannelsTest extends ResourceCase
         $this->assertObjectHasProperties($data, array('_total', 'videos'));
         $this->assertInternalType('array', $data->videos);
 
-        $this->assertFalse($this->public->channels->videos(NaN));
         $this->assertFalse($this->public->channels->videos(null));
         $this->assertFalse($this->public->channels->videos([]));
         $this->assertFalse($this->public->channels->videos(new \stdClass));
         $this->assertFalse($this->public->channels->videos(-1));
     }
 
-    function testStartCommercial()
+    function testCommercial()
     {
-        $data = $this->personal->channels->startCommercial($this->name, 30);
+        $data = $this->personal->channels->commercial($this->name, 30);
 
         $this->assertNotFalse($data);
         $this->assertObjectHasProperties($data, array('Length', 'Message', 'RetryAfter'));
 
-        $this->assertFalse($this->personal->channels->startCommercial(NaN, 30));
-        $this->assertFalse($this->personal->channels->startCommercial(null, 30));
-        $this->assertFalse($this->personal->channels->startCommercial([], 30));
-        $this->assertFalse($this->personal->channels->startCommercial(new \stdClass, 30));
-        $this->assertFalse($this->personal->channels->startCommercial(-1, 30));
+        $this->assertFalse($this->personal->channels->commercial(null, 30));
+        $this->assertFalse($this->personal->channels->commercial([], 30));
+        $this->assertFalse($this->personal->channels->commercial(new \stdClass, 30));
+        $this->assertFalse($this->personal->channels->commercial(-1, 30));
     }
 
-    function testStartCommercialAuthentification()
+    function testCommercialAuthentification()
     {
         $this->expectException(AuthentificationException::class);
-        $this->public->channels->startCommercial($this->name, 30);
+        $this->public->channels->commercial($this->name, 30);
     }
 
-    function testStartCommercialInvalidDuration()
+    function testCommercialInvalidDuration()
     {
         /*
             // Should be thrown according to documentation
